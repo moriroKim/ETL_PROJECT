@@ -287,9 +287,7 @@ def transfer_to_aws():
         
         # 로컬 연결 문자열 생성
         local_encoded_password = quote_plus(LOCAL_DB_CONFIG['password'])
-        host = LOCAL_DB_CONFIG['host'].split('://')[1].split(':')[0]  # 0.tcp.jp.ngrok.io
-        port = LOCAL_DB_CONFIG['host'].split(':')[-1]  # 18215
-        local_connection_string = f"mysql+pymysql://{LOCAL_DB_CONFIG['user']}:{local_encoded_password}@{host}:{port}/{LOCAL_DB_CONFIG['database']}"
+        local_connection_string = f"mysql+pymysql://{LOCAL_DB_CONFIG['user']}:{local_encoded_password}@{LOCAL_DB_CONFIG['host']}:{LOCAL_DB_CONFIG['port']}/{LOCAL_DB_CONFIG['database']}"
         local_engine = create_engine(local_connection_string)
         
         # AWS 연결 문자열 생성
