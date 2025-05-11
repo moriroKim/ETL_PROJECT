@@ -1,4 +1,6 @@
 .env
+.etlcore
+.etlcore/
 __pycache__/
 *.pyc
 *.pyo

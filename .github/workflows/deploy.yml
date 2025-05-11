@@ -41,7 +41,7 @@ jobs:
           cat >>~/.ssh/config <<END
           Host ec2
             HostName ${{ secrets.AWS_HOST }}
-            User ${{ secrets.AWS_USERNAME }}ㅉㅉ
+            User ${{ secrets.AWS_USERNAME }}
             IdentityFile ~/.ssh/deploy_key
             StrictHostKeyChecking no
           END
@@ -64,17 +64,17 @@ jobs:
             
             # .env 파일 생성
             cat > .env << EOL
-            LOCAL_DB_HOST=localhost
-            LOCAL_DB_PORT=3306
-            LOCAL_DB_USER=etl_user
-            LOCAL_DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-            LOCAL_DB_NAME=etl_project
+            LOCAL_DB_HOST=${{ secrets.LOCAL_DB_HOST }}
+            LOCAL_DB_PORT=${{ secrets.LOCAL_DB_PORT }}
+            LOCAL_DB_USER=${{ secrets.LOCAL_DB_USER }}
+            LOCAL_DB_PASSWORD=${{ secrets.LOCAL_DB_PASSWORD }}
+            LOCAL_DB_NAME=${{ secrets.LOCAL_DB_NAME }}
             
-            AWS_DB_HOST=localhost
-            AWS_DB_PORT=3306
-            AWS_DB_USER=etl_user
-            AWS_DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-            AWS_DB_NAME=etl_project
+            AWS_DB_HOST=${{ secrets.AWS_DB_HOST }}
+            AWS_DB_PORT=${{ secrets.AWS_DB_PORT }}
+            AWS_DB_USER=${{ secrets.AWS_DB_USER }}
+            AWS_DB_PASSWORD=${{ secrets.AWS_DB_PASSWORD }}
+            AWS_DB_NAME=${{ secrets.AWS_DB_NAME }}
             EOL
             
             # 실행 권한 부여
