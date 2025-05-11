@@ -1,0 +1,85 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches: [main] # main 브랜치에 푸시될 때 실행
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Install putty-tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y putty-tools
+
+      - name: Create SSH directory
+        run: mkdir -p ~/.ssh/
+
+      - name: Convert PPK to PEM and Store SSH key
+        run: |
+          # PPK를 PEM으로 변환
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/temp.ppk
+          puttygen ~/.ssh/temp.ppk -O private-openssh -o ~/.ssh/deploy_key
+          rm ~/.ssh/temp.ppk
+          chmod 600 ~/.ssh/deploy_key
+
+          # SSH 설정
+          cat >>~/.ssh/config <<END
+          Host ec2
+            HostName ${{ secrets.AWS_HOST }}
+            User ${{ secrets.AWS_USERNAME }}ㅉㅉ
+            IdentityFile ~/.ssh/deploy_key
+            StrictHostKeyChecking no
+          END
+
+      - name: Deploy to EC2
+        run: |
+          # 프로젝트 파일 전송
+          scp -r ./* ec2:~/etl_project/
+
+          # EC2 서버에서 실행할 명령어
+          ssh ec2 '
+            cd ~/etl_project
+            
+            # Python 가상환경 생성 및 활성화
+            python3 -m venv venv
+            source venv/bin/activate
+            
+            # 의존성 설치
+            pip install -r requirements.txt
+            
+            # .env 파일 생성
+            cat > .env << EOL
+            LOCAL_DB_HOST=localhost
+            LOCAL_DB_PORT=3306
+            LOCAL_DB_USER=etl_user
+            LOCAL_DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            LOCAL_DB_NAME=etl_project
+            
+            AWS_DB_HOST=localhost
+            AWS_DB_PORT=3306
+            AWS_DB_USER=etl_user
+            AWS_DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            AWS_DB_NAME=etl_project
+            EOL
+            
+            # 실행 권한 부여
+            chmod +x src/*.py
+            
+            # ETL 스크립트 실행
+            python src/etl_to_aws.py
+          '
