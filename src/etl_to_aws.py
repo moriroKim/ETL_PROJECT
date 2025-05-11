@@ -282,6 +282,9 @@ def transfer_to_aws():
     logging.info("=== AWS 데이터 이관 시작 ===")
     
     try:
+        # AWS 데이터베이스 생성
+        create_aws_database()
+        
         # 로컬 연결 문자열 생성
         local_encoded_password = quote_plus(LOCAL_DB_CONFIG['password'])
         local_connection_string = f"mysql+pymysql://{LOCAL_DB_CONFIG['user']}:{local_encoded_password}@{LOCAL_DB_CONFIG['host']}:{LOCAL_DB_CONFIG['port']}/{LOCAL_DB_CONFIG['database']}"
