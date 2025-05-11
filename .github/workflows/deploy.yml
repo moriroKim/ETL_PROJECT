@@ -38,13 +38,11 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
 
           # SSH 설정
-          cat >>~/.ssh/config <<END
-          Host ec2
-            HostName ${{ secrets.AWS_HOST }}
-            User ${{ secrets.AWS_USERNAME }}
-            IdentityFile ~/.ssh/deploy_key
-            StrictHostKeyChecking no
-          END
+          echo "Host ec2" >> ~/.ssh/config
+          echo "  HostName ${{ secrets.AWS_HOST }}" >> ~/.ssh/config
+          echo "  User ${{ secrets.AWS_USERNAME }}" >> ~/.ssh/config
+          echo "  IdentityFile ~/.ssh/deploy_key" >> ~/.ssh/config
+          echo "  StrictHostKeyChecking no" >> ~/.ssh/config
 
       - name: Deploy to EC2
         run: |
