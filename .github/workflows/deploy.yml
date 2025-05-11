@@ -78,8 +78,8 @@ jobs:
             # 실행 권한 부여
             chmod +x src/*.py
             
-            # 기존 ETL 관련 크론 작업을 모두 제거하고 3분 단위로 새로 추가
-            (crontab -l 2>/dev/null | grep -v "etl_to_aws.py"; echo "*/3 * * * * cd ~/etl_project && source venv/bin/activate && python src/etl_to_aws.py >> ~/etl_project/etl.log 2>&1") | crontab -
+            # 크론탭 추가 (2분 단위로 실행행)
+            */2 * * * * cd ~/etl_project && /home/ubuntu/etl_project/venv/bin/python src/etl_to_aws.py >> ~/etl_project/etl.log 2>&1
             
             # ETL 스크립트 실행
             python src/etl_to_aws.py

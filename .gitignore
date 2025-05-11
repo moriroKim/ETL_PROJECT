@@ -12,3 +12,14 @@ venv/
 *.ppk
 *.pem
 *.log
+imgs
+report
+*.sql
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.development
+.env.test
+imgs/
+report/
