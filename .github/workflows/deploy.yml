@@ -78,6 +78,9 @@ jobs:
             # 실행 권한 부여
             chmod +x src/*.py
             
+            # crontab 설정
+            (crontab -l 2>/dev/null; echo "* * * * * cd ~/etl_project && source venv/bin/activate && python src/etl_to_aws.py >> ~/etl_project/etl.log 2>&1") | crontab -
+            
             # ETL 스크립트 실행
             python src/etl_to_aws.py
           '
