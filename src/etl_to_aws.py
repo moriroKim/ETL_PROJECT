@@ -144,9 +144,12 @@ def get_parameter(engine, param_name):
 def update_parameter(engine, param_name, param_value):
     """파라미터 값 업데이트"""
     try:
-        query = "UPDATE etl_parameters SET param_value = %s WHERE param_name = %s"
+        query = "UPDATE etl_parameters SET param_value = :param_value WHERE param_name = :param_name"
         with engine.connect() as conn:
-            conn.execute(text(query), (param_value, param_name))
+            conn.execute(text(query), {
+                'param_value': param_value,
+                'param_name': param_name
+            })
     except Exception as e:
         error_msg = f"파라미터 업데이트 중 오류 발생: {str(e)}"
         logging.error(error_msg)
