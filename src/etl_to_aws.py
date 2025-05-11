@@ -132,9 +132,9 @@ def create_parameter_table(engine):
 def get_parameter(engine, param_name):
     """파라미터 값 조회"""
     try:
-        query = "SELECT param_value FROM etl_parameters WHERE param_name = %s"
+        query = "SELECT param_value FROM etl_parameters WHERE param_name = :param_name"
         with engine.connect() as conn:
-            result = conn.execute(text(query), (param_name,)).fetchone()
+            result = conn.execute(text(query), {'param_name': param_name}).fetchone()
             return result[0] if result else None
     except Exception as e:
         error_msg = f"파라미터 조회 중 오류 발생: {str(e)}"
