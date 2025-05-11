@@ -256,7 +256,7 @@ def validate_report_data(source_df, target_df):
 def generate_report_data(local_engine, batch_size=1000):
     """로컬 DB의 데이터를 기반으로 보고 데이터 생성"""
     try:
-        # 예시: 고객별 대출 및 거래 통계 보고서
+        # 고객별 대출 및 거래 통계 보고서
         query = """
         SELECT 
             c.customer_id,
@@ -321,12 +321,15 @@ def transfer_to_aws():
         logging.info("보고 데이터 생성 중...")
         source_df, current_time = generate_report_data(local_engine, batch_size)
         
-        # AWS로 데이터 이관 (누적 저장)
+        # 3분 단위 테이블 이름 생성 (YYYYMMDD_HHMM 형식)
+        table_name = f'customer_loan_transaction_report_{datetime.now().strftime("%Y%m%d_%H%M")}'
+        
+        # AWS로 데이터 이관
         logging.info("보고 데이터를 AWS로 이관 중...")
         source_df.to_sql(
-            name='customer_loan_transaction_report',
+            name=table_name,
             con=aws_engine,
-            if_exists='append',  # 누적 저장을 위해 'append' 사용
+            if_exists='replace',  # 같은 시간대의 데이터는 덮어쓰기
             index=False
         )
         
