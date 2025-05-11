@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ETL 프로젝트 디렉토리로 이동
-cd /home/ubuntu/ETL_PROJECT
+cd /home/ubuntu/etl_project
 
 # 가상환경 활성화
 source venv/bin/activate
