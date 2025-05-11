@@ -135,7 +135,16 @@ def get_parameter(engine, param_name):
         query = "SELECT param_value FROM etl_parameters WHERE param_name = :param_name"
         with engine.connect() as conn:
             result = conn.execute(text(query), {'param_name': param_name}).fetchone()
-            return result[0] if result else None
+            if result is None:
+                # 파라미터가 없으면 기본값 반환
+                default_values = {
+                    'batch_size': '1000',
+                    'retention_days': '30',
+                    'error_threshold': '100',
+                    'last_etl_date': None
+                }
+                return default_values.get(param_name)
+            return result[0]
     except Exception as e:
         error_msg = f"파라미터 조회 중 오류 발생: {str(e)}"
         logging.error(error_msg)
@@ -302,12 +311,11 @@ def transfer_to_aws():
         aws_connection_string = f"mysql+pymysql://{AWS_DB_CONFIG['user']}:{aws_encoded_password}@{AWS_DB_CONFIG['host']}:{AWS_DB_CONFIG['port']}/{AWS_DB_CONFIG['database']}"
         aws_engine = create_engine(aws_connection_string)
         
-        
-        # 파라미터 테이블 생성
+        # 파라미터 테이블 생성 및 기본값 설정
         create_parameter_table(aws_engine)
         
-        # 배치 사이즈 가져오기
-        batch_size = int(get_parameter(aws_engine, 'batch_size'))
+        # 배치 사이즈 가져오기 (기본값 1000)
+        batch_size = int(get_parameter(aws_engine, 'batch_size') or 1000)
         
         # 보고 데이터 생성
         logging.info("보고 데이터 생성 중...")
