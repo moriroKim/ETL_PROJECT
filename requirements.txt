@@ -2,4 +2,4 @@ pandas>=2.0.0
 pymysql>=1.1.0
 sqlalchemy>=2.0.0
 python-dotenv>=1.0.0
-cryptography>=41.0.0  # MySQL 연결을 위한 의존성 
+cryptography>=41.0.0
