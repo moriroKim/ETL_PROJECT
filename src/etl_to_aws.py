@@ -64,7 +64,7 @@ def create_aws_database():
         raise
 
 def get_local_tables():
-    """로컬 데이터베이스의 테이블 목록 조회"""
+    """로컬 데이터베이스의 테이블 목록을 조회"""
     try:
         # 로컬 MySQL 연결
         conn = connect(
