@@ -335,7 +335,7 @@ def transfer_to_aws():
         
         # 이관된 데이터 검증
         logging.info("데이터 검증 중...")
-        target_df = pd.read_sql_table('customer_loan_transaction_report', aws_engine)
+        target_df = pd.read_sql_table(table_name, aws_engine)
         validate_report_data(source_df, target_df)
         
         # 마지막 ETL 실행 시간 업데이트
