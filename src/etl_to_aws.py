@@ -1,6 +1,6 @@
 import pandas as pd
 from pymysql import connect
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from config import AWS_DB_CONFIG, LOCAL_DB_CONFIG, print_loading_effect
 from urllib.parse import quote_plus
 from datetime import datetime
@@ -102,7 +102,7 @@ def create_parameter_table(engine):
         )
         """
         with engine.connect() as conn:
-            conn.execute(query)
+            conn.execute(text(query))
         
         # 기본 파라미터 값 설정
         default_params = [
@@ -118,7 +118,7 @@ def create_parameter_table(engine):
             VALUES (%s, %s, %s)
             """
             with engine.connect() as conn:
-                conn.execute(query, param)
+                conn.execute(text(query), param)
                 
     except Exception as e:
         error_msg = f"파라미터 테이블 생성 중 오류 발생: {str(e)}"
@@ -130,7 +130,7 @@ def get_parameter(engine, param_name):
     try:
         query = "SELECT param_value FROM etl_parameters WHERE param_name = %s"
         with engine.connect() as conn:
-            result = conn.execute(query, (param_name,)).fetchone()
+            result = conn.execute(text(query), (param_name,)).fetchone()
             return result[0] if result else None
     except Exception as e:
         error_msg = f"파라미터 조회 중 오류 발생: {str(e)}"
@@ -142,7 +142,7 @@ def update_parameter(engine, param_name, param_value):
     try:
         query = "UPDATE etl_parameters SET param_value = %s WHERE param_name = %s"
         with engine.connect() as conn:
-            conn.execute(query, (param_value, param_name))
+            conn.execute(text(query), (param_value, param_name))
     except Exception as e:
         error_msg = f"파라미터 업데이트 중 오류 발생: {str(e)}"
         logging.error(error_msg)
