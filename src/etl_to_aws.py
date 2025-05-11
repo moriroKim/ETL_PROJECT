@@ -115,10 +115,14 @@ def create_parameter_table(engine):
         for param in default_params:
             query = """
             INSERT IGNORE INTO etl_parameters (param_name, param_value, description)
-            VALUES (%s, %s, %s)
+            VALUES (:param_name, :param_value, :description)
             """
             with engine.connect() as conn:
-                conn.execute(text(query), param)
+                conn.execute(text(query), {
+                    'param_name': param[0],
+                    'param_value': param[1],
+                    'description': param[2]
+                })
                 
     except Exception as e:
         error_msg = f"파라미터 테이블 생성 중 오류 발생: {str(e)}"
