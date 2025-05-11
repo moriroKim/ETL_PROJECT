@@ -6,6 +6,9 @@ cd /home/ubuntu/ETL_PROJECT
 # 가상환경 활성화
 source venv/bin/activate
 
+# 필요한 패키지 설치
+pip install -r requirements.txt
+
 # ETL 스크립트 실행
 python3 src/etl_to_aws.py
 
